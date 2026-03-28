@@ -6,20 +6,25 @@
   <title>Leitura Dinamica</title>
   <style>
     :root {
-      --bg: #f4f1ea;
-      --surface: rgba(255, 252, 246, 0.88);
-      --surface-strong: #fffdf8;
-      --line: rgba(94, 78, 58, 0.14);
-      --text: #2b241b;
-      --muted: #6f6253;
-      --primary: #1f6f5f;
-      --primary-strong: #165549;
-      --accent: #c97d3c;
+      --bg: #ffffff;
+      --surface: rgba(255, 250, 242, 0.84);
+      --surface-strong: rgba(255, 253, 248, 0.95);
+      --surface-deep: #fffaf1;
+      --line: rgba(84, 67, 45, 0.12);
+      --line-strong: rgba(84, 67, 45, 0.2);
+      --text: #241c14;
+      --muted: #6f6254;
+      --primary: #7348ff;
+      --primary-strong: #4a2cc2;
+      --accent: #4db6ff;
+      --accent-soft: rgba(77, 182, 255, 0.12);
       --danger: #b54b4b;
-      --shadow: 0 18px 50px rgba(49, 39, 24, 0.08);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
+      --shadow: 0 22px 60px rgba(51, 38, 20, 0.12);
+      --shadow-soft: 0 12px 28px rgba(51, 38, 20, 0.06);
+      --radius-xl: 32px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
       --font-ui: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       --font-reading: Georgia, "Times New Roman", serif;
     }
@@ -30,17 +35,14 @@
       margin: 0;
       font-family: var(--font-ui);
       color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(201, 125, 60, 0.18), transparent 32%),
-        radial-gradient(circle at top right, rgba(31, 111, 95, 0.16), transparent 28%),
-        linear-gradient(180deg, #f6f1e7 0%, #f1ece1 48%, #ece7dd 100%);
+      background: #ffffff;
       min-height: 100vh;
     }
 
     .page {
       width: min(1120px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 32px 0 48px;
+      padding: 28px 0 56px;
     }
 
     .hero, .panel {
@@ -48,31 +50,200 @@
       border: 1px solid var(--line);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(16px);
     }
 
-    .hero { padding: 32px; }
+    .hero {
+      padding: 28px 30px 34px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto -40px -80px auto;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(115, 72, 255, 0.12), transparent 68%);
+      z-index: -1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 74px;
+      height: 74px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+
+    .language-select {
+      min-width: 170px;
+      padding: 12px 42px 12px 18px;
+      border-radius: 999px;
+      border: 2px solid rgba(115, 72, 255, 0.5);
+      color: var(--primary-strong);
+      background: rgba(255, 255, 255, 0.72);
+      font: inherit;
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--primary-strong) 50%),
+        linear-gradient(135deg, var(--primary-strong) 50%, transparent 50%);
+      background-position:
+        calc(100% - 24px) calc(50% - 2px),
+        calc(100% - 18px) calc(50% - 2px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+    }
+
+    .language-select:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(115, 72, 255, 0.08);
+    }
+
+    .hero-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 420px);
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+
+    .hero-copy {
+      padding-right: 10px;
+    }
+
+    .hero-kicker {
+      margin: 0 0 10px;
+      color: var(--primary);
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+    }
+
+    .hero-title {
+      margin: 16px 0 12px;
+      font-size: clamp(2.2rem, 4.4vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      max-width: 10ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 190px;
+      padding: 14px 20px;
+      border-radius: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+    }
+
+    .hero-link:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-link.primary-link {
+      background: linear-gradient(135deg, var(--primary), #855fff);
+      color: #fff;
+      box-shadow: 0 16px 26px rgba(115, 72, 255, 0.2);
+    }
+
+    .hero-link.secondary-link {
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--primary);
+      border: 2px solid rgba(115, 72, 255, 0.5);
+    }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-image-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 12px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 244, 0.86));
+      border: 1px solid rgba(84, 67, 45, 0.08);
+      box-shadow: 0 24px 48px rgba(51, 38, 20, 0.12);
+    }
+
+    .hero-image {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 22px;
+    }
 
     .eyebrow {
       display: inline-flex;
+      align-items: center;
+      gap: 10px;
       padding: 8px 12px;
       border-radius: 999px;
-      background: rgba(31, 111, 95, 0.1);
+      background: rgba(115, 72, 255, 0.08);
       color: var(--primary-strong);
       font-size: 0.92rem;
       font-weight: 700;
+      border: 1px solid rgba(115, 72, 255, 0.12);
     }
 
     h1 {
-      margin: 18px 0 12px;
-      font-size: clamp(2rem, 4vw, 3.4rem);
-      line-height: 1.05;
+      margin: 18px 0 14px;
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      line-height: 0.98;
       letter-spacing: -0.03em;
+      max-width: 10ch;
     }
 
     .hero p, .panel-header p, .hero-card p, .hero-card li, .hint, .footer-note, .empty-state {
       color: var(--muted);
       line-height: 1.7;
+    }
+
+    .hero > p {
+      max-width: 740px;
+      font-size: 1.02rem;
     }
 
     .hero-grid, .layout, .stats, .tabs {
@@ -81,39 +252,92 @@
     }
 
     .hero-grid { grid-template-columns: 1.6fr 1fr; margin-top: 26px; }
-    .tabs { grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 28px 0 18px; }
-    .layout { grid-template-columns: minmax(280px, 360px) 1fr; }
+    .hero-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .tabs {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 30px 0 18px;
+      padding: 10px;
+      border-radius: 999px;
+      background: rgba(255, 251, 246, 0.7);
+      border: 1px solid rgba(84, 67, 45, 0.08);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+    }
+    .layout { grid-template-columns: minmax(300px, 380px) 1fr; align-items: start; }
     .stats { grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
 
     .hero-card, .card, .stat {
-      background: var(--surface-strong);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 251, 244, 0.92));
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
     }
 
-    .hero-card, .card { padding: 20px; }
-    .stat { padding: 14px; }
+    .hero-highlight {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 249, 242, 0.78));
+      border: 1px solid rgba(84, 67, 45, 0.08);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-highlight strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-highlight span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .hero-card, .card { padding: 22px; }
+    .stat { padding: 16px; }
 
     .hero-card ul { margin: 0; padding-left: 18px; }
-    .hero-card h2, .card h3 { margin: 0 0 12px; font-size: 1.05rem; }
+    .hero-card h2, .card h3 { margin: 0 0 12px; font-size: 1.05rem; letter-spacing: -0.01em; }
 
     .tab-button {
       border: 1px solid transparent;
-      background: rgba(255, 255, 255, 0.6);
+      background: transparent;
       color: var(--text);
       border-radius: 999px;
       padding: 14px 16px;
       font: inherit;
       font-weight: 700;
       cursor: pointer;
+      transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
     }
 
-    .tab-button.active { background: var(--primary); color: #fff; }
+    .tab-button:hover {
+      transform: translateY(-1px);
+      background: rgba(115, 72, 255, 0.08);
+    }
 
-    .panel { display: none; padding: 28px; }
-    .panel.active { display: block; }
-    .panel-header { margin-bottom: 22px; }
-    .panel-header h2 { margin: 0 0 8px; font-size: 1.6rem; }
+    .tab-button.active {
+      background: linear-gradient(135deg, var(--primary), #855fff);
+      color: #fff;
+      box-shadow: 0 12px 22px rgba(115, 72, 255, 0.24);
+    }
+
+    .panel { display: none; padding: 30px; }
+    .panel.active { display: block; animation: panelRise 0.32s ease; }
+    .panel-header { margin-bottom: 24px; }
+    .panel-header h2 { margin: 0 0 8px; font-size: 1.78rem; letter-spacing: -0.02em; }
+
+    @keyframes panelRise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .field { margin-bottom: 14px; }
     label { display: block; font-size: 0.94rem; font-weight: 700; margin-bottom: 8px; }
@@ -121,11 +345,19 @@
     textarea, input[type="number"], input[type="range"] { width: 100%; font: inherit; }
 
     textarea, input[type="number"] {
-      border: 1px solid rgba(94, 78, 58, 0.2);
+      border: 1px solid rgba(94, 78, 58, 0.16);
       border-radius: var(--radius-md);
-      padding: 12px 14px;
-      background: #fff;
+      padding: 13px 14px;
+      background: rgba(255, 255, 255, 0.96);
       color: var(--text);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    textarea:focus, input[type="number"]:focus {
+      outline: none;
+      border-color: rgba(115, 72, 255, 0.3);
+      box-shadow: 0 0 0 4px rgba(115, 72, 255, 0.08);
     }
 
     textarea { min-height: 180px; resize: vertical; line-height: 1.6; }
@@ -145,11 +377,29 @@
       font: inherit;
       font-weight: 700;
       cursor: pointer;
+      box-shadow: 0 8px 18px rgba(51, 38, 20, 0.08);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
     }
 
-    .primary { background: var(--primary); color: #fff; }
-    .secondary { background: rgba(31, 111, 95, 0.09); color: var(--primary-strong); }
-    .danger { background: rgba(181, 75, 75, 0.12); color: var(--danger); }
+    button.action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(51, 38, 20, 0.12);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--primary), #855fff);
+      color: #fff;
+    }
+    .secondary {
+      background: rgba(115, 72, 255, 0.08);
+      color: var(--primary-strong);
+      border: 1px solid rgba(115, 72, 255, 0.12);
+    }
+    .danger {
+      background: rgba(181, 75, 75, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(181, 75, 75, 0.08);
+    }
 
     .stat-label {
       font-size: 0.82rem;
@@ -165,16 +415,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 28px;
       text-align: center;
       overflow: hidden;
+      scroll-margin-top: 16px;
+      background:
+        radial-gradient(circle at top, rgba(190, 122, 58, 0.08), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 249, 242, 0.94));
+      position: relative;
     }
 
     .rsvp-word {
       font-family: var(--font-reading);
-      font-size: clamp(2rem, 6vw, 4.6rem);
-      line-height: 1.15;
+      font-size: clamp(2.2rem, 6vw, 5rem);
+      line-height: 1.1;
       font-weight: 700;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
     }
 
     .focus-wrapper, .speed-reader {
@@ -188,55 +445,77 @@
     }
 
     .focus-word { padding: 0 2px; border-radius: 6px; }
-    .focus-word.active { background: rgba(201, 125, 60, 0.22); color: #7b4215; }
+    .focus-word.active {
+      background: rgba(190, 122, 58, 0.2);
+      color: #7b4215;
+      box-shadow: 0 8px 16px rgba(190, 122, 58, 0.08);
+    }
 
     .chunk-box {
       max-width: 760px;
       margin: 0 auto;
-      padding: 28px;
-      border-radius: 24px;
-      background: linear-gradient(135deg, rgba(31, 111, 95, 0.08), rgba(201, 125, 60, 0.08)), #fff;
+      padding: 34px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(115, 72, 255, 0.08), rgba(77, 182, 255, 0.08)), #fff;
       border: 1px solid var(--line);
       font-family: var(--font-reading);
-      font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+      font-size: clamp(1.8rem, 3.8vw, 2.9rem);
       line-height: 1.5;
+      box-shadow: 0 20px 40px rgba(51, 38, 20, 0.08);
     }
 
     .speed-text {
       min-height: 280px;
-      background: #fff;
-      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 28px;
       white-space: pre-wrap;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
     .timer {
       display: inline-flex;
+      justify-content: center;
       min-width: 180px;
-      padding: 14px 18px;
+      padding: 16px 20px;
       border-radius: 999px;
-      background: rgba(31, 111, 95, 0.1);
+      background: linear-gradient(135deg, rgba(115, 72, 255, 0.12), rgba(77, 182, 255, 0.08));
       color: var(--primary-strong);
       font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: 0.04em;
+      border: 1px solid rgba(115, 72, 255, 0.14);
     }
 
     .result {
       margin-top: 18px;
-      padding: 18px;
+      padding: 20px;
       border-radius: var(--radius-lg);
-      background: rgba(201, 125, 60, 0.1);
-      border: 1px solid rgba(201, 125, 60, 0.2);
+      background: linear-gradient(135deg, rgba(190, 122, 58, 0.12), rgba(190, 122, 58, 0.06));
+      border: 1px solid rgba(190, 122, 58, 0.16);
     }
 
-    .footer-note { margin-top: 22px; font-size: 0.92rem; text-align: center; }
+    .result h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      font-size: 0.92rem;
+      text-align: center;
+      opacity: 0.9;
+    }
 
     @media (max-width: 920px) {
       .hero-grid, .layout, .stats { grid-template-columns: 1fr; }
-      .tabs { grid-template-columns: repeat(2, 1fr); }
+      .hero-highlights { grid-template-columns: 1fr; }
+      .hero-main { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: repeat(2, 1fr); border-radius: 24px; }
       .display { min-height: 320px; }
+      h1 { max-width: none; }
+      .topbar { align-items: flex-start; }
     }
 
     @media (max-width: 600px) {
@@ -245,69 +524,117 @@
       .tabs { grid-template-columns: 1fr; }
       .controls { flex-direction: column; }
       button.action { width: 100%; }
+      .hero-grid { gap: 14px; }
+      .chunk-box { padding: 24px; }
+      .display { padding: 20px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .brand-logo { width: 58px; height: 58px; }
+      .hero-actions { flex-direction: column; }
+      .hero-link { width: 100%; }
     }
   </style>
 </head>
 <body>
   <main class="page">
     <section class="hero">
-      <span class="eyebrow">Treino de leitura sem complicacao</span>
-      <h1>Leitura Dinamica</h1>
-      <p>Este site fornece ferramentas para praticar leitura dinâmica de forma simples. Voce cola um texto, escolhe um modo e treina direto no navegador.</p>
+      <div class="topbar">
+        <div class="brand">
+          <img class="brand-logo" src="assets/logo.png" alt="Logo do Readflow">
+          <h1 class="brand-name">Readflow</h1>
+        </div>
+        <select id="language-select" class="language-select" aria-label="Language selector">
+          <option value="en" selected>English</option>
+          <option value="pt">Portuguese</option>
+          <option value="es">Spanish</option>
+          <option value="zh">Chinese</option>
+        </select>
+      </div>
+      <div class="hero-main">
+        <div class="hero-copy">
+      <span class="eyebrow" id="hero-eyebrow">Simple reading practice</span>
+      <h2 class="hero-title" id="hero-title">Smart Reading Starts Here</h2>
+      <p id="hero-description">This site offers simple tools to practice speed reading. Paste a text, choose a mode, and train directly in your browser.</p>
+          <p class="hero-kicker" id="hero-kicker">Smarter reading with rhythm, focus, and clarity.</p>
+          <div class="hero-actions">
+            <a class="hero-link primary-link" href="#tabs-anchor" data-open-tab="rsvp">Start now</a>
+            <a class="hero-link secondary-link" href="#tabs-anchor" data-open-tab="speed">Test reading speed</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-image-card">
+            <img class="hero-image" src="assets/pessoalendo1.jpg" alt="Pessoa lendo na praia">
+          </div>
+        </div>
+      </div>
+      <div class="hero-highlights">
+        <div class="hero-highlight">
+          <strong>4 training modes</strong>
+          <span>A simple experience to practice rhythm, focus, and speed.</span>
+        </div>
+        <div class="hero-highlight">
+          <strong>No signup required</strong>
+          <span>Open the page, paste a text, and start immediately.</span>
+        </div>
+        <div class="hero-highlight">
+          <strong>Built to stay light</strong>
+          <span>Works directly in the browser, including on smaller screens.</span>
+        </div>
+      </div>
       <div class="hero-grid">
         <div class="hero-card">
-          <h2>O que voce encontra aqui</h2>
+          <h2>What you will find here</h2>
           <ul>
-            <li><strong>RSVP:</strong> mostra uma palavra por vez.</li>
-            <li><strong>Foco:</strong> mostra o texto completo com destaque visual da leitura.</li>
-            <li><strong>Chunking:</strong> mostra blocos de palavras por vez.</li>
-            <li><strong>Teste de Velocidade:</strong> mede tempo, total de palavras e PPM.</li>
+            <li><strong>RSVP:</strong> shows one word at a time.</li>
+            <li><strong>Focus:</strong> shows the full text with a reading highlight.</li>
+            <li><strong>Chunking:</strong> shows groups of words at a time.</li>
+            <li><strong>Speed Test:</strong> measures time, total words, and WPM.</li>
           </ul>
         </div>
         <div class="hero-card">
-          <h2>Como usar</h2>
-          <p>Escolha uma aba, cole o seu texto, ajuste a velocidade se quiser e clique em iniciar. Cada modo foi pensado para ser direto, claro e facil de usar no seu computador.</p>
+          <h2>How to use it</h2>
+          <p>Choose a tab, paste your text, adjust the speed if needed, and click start. Each mode was designed to be clear, direct, and easy to use on your computer or phone.</p>
         </div>
       </div>
     </section>
 
+    <div id="tabs-anchor"></div>
     <nav class="tabs" aria-label="Modos de leitura">
       <button class="tab-button active" data-tab="rsvp">RSVP</button>
-      <button class="tab-button" data-tab="focus">Foco</button>
+      <button class="tab-button" data-tab="focus">Focus</button>
       <button class="tab-button" data-tab="chunking">Chunking</button>
-      <button class="tab-button" data-tab="speed">Teste de Velocidade</button>
+      <button class="tab-button" data-tab="speed">Speed Test</button>
     </nav>
 
     <section class="panel active" id="rsvp-panel">
       <div class="panel-header">
         <h2>RSVP</h2>
-        <p>Neste modo, o texto aparece palavra por palavra no centro da tela. Ele e bom para treino de ritmo e foco visual.</p>
+        <p>In this mode, the text appears one word at a time in the center of the screen. It is useful for training rhythm and visual focus.</p>
       </div>
       <div class="layout">
         <div class="card">
-          <h3>Configurar texto</h3>
+          <h3>Set up text</h3>
           <div class="field">
-            <label for="rsvp-text">Cole ou digite o texto</label>
-            <textarea id="rsvp-text">Ler com consistencia e treino pode ajudar voce a ganhar ritmo, foco e confianca. Use este modo para acompanhar uma palavra por vez no centro da tela.</textarea>
+            <label for="rsvp-text">Paste or type the text</label>
+            <textarea id="rsvp-text">Reading with consistency and practice can help you gain rhythm, focus, and confidence. Use this mode to follow one word at a time in the center of the screen.</textarea>
           </div>
           <div class="field">
-            <label for="rsvp-speed">Velocidade: <span id="rsvp-speed-value">300</span> palavras por minuto</label>
+            <label for="rsvp-speed">Speed: <span id="rsvp-speed-value">300</span> words per minute</label>
             <input id="rsvp-speed" type="range" min="100" max="800" step="10" value="300">
-            <div class="hint">Quanto maior o numero, mais rapido as palavras vao aparecer.</div>
+            <div class="hint">The higher the number, the faster the words will appear.</div>
           </div>
           <div class="controls">
-            <button class="action primary" id="rsvp-start">Iniciar</button>
-            <button class="action secondary" id="rsvp-pause">Pausar</button>
-            <button class="action danger" id="rsvp-reset">Reiniciar</button>
+            <button class="action primary" id="rsvp-start">Start</button>
+            <button class="action secondary" id="rsvp-pause">Pause</button>
+            <button class="action danger" id="rsvp-reset">Reset</button>
           </div>
           <div class="stats">
-            <div class="stat"><span class="stat-label">Palavras</span><strong id="rsvp-total">0</strong></div>
-            <div class="stat"><span class="stat-label">Posicao</span><strong id="rsvp-index">0</strong></div>
-            <div class="stat"><span class="stat-label">Status</span><strong id="rsvp-status">Parado</strong></div>
+            <div class="stat"><span class="stat-label">Words</span><strong id="rsvp-total">0</strong></div>
+            <div class="stat"><span class="stat-label">Position</span><strong id="rsvp-index">0</strong></div>
+            <div class="stat"><span class="stat-label">Status</span><strong id="rsvp-status">Stopped</strong></div>
           </div>
         </div>
         <div class="card display">
-          <div class="rsvp-word" id="rsvp-display">Cole um texto e clique em Iniciar</div>
+          <div class="rsvp-word" id="rsvp-display">Paste a text and click Start</div>
         </div>
       </div>
     </section>
@@ -426,16 +753,351 @@
       </div>
     </section>
 
-    <p class="footer-note">Proteja seu cérebro da avalanche da IA. Leia mais e mais, com qualidade.</p>
+    <p class="footer-note">Projeto estatico, simples de editar e pronto para publicar como pagina web.</p>
   </main>
 
   <script>
-    const defaultEmptyMessage = {
-      rsvp: "Cole um texto e clique em Iniciar",
-      focus: '<p class="empty-state">Cole um texto, ajuste a velocidade e clique em Iniciar para acompanhar a leitura com destaque visual.</p>',
-      chunking: "Cole um texto e clique em Iniciar",
-      speed: "Cole um texto, clique em Iniciar e leia normalmente. Quando terminar, clique em Parar."
+    const translations = {
+      en: {
+        static: {
+          heroEyebrow: "Simple reading practice",
+          heroTitle: "Smart Reading Starts Here",
+          heroDescription: "This site offers simple tools to practice speed reading. Paste a text, choose a mode, and train directly in your browser.",
+          heroKicker: "Smarter reading with rhythm, focus, and clarity.",
+          heroCtaMain: "Start now",
+          heroCtaSpeed: "Test reading speed",
+          highlight1Title: "4 training modes",
+          highlight1Text: "A simple experience to practice rhythm, focus, and speed.",
+          highlight2Title: "No signup required",
+          highlight2Text: "Open the page, paste a text, and start immediately.",
+          highlight3Title: "Built to stay light",
+          highlight3Text: "Works directly in the browser, including on smaller screens.",
+          overviewTitle: "What you will find here",
+          overviewList: "<li><strong>RSVP:</strong> shows one word at a time.</li><li><strong>Focus:</strong> shows the full text with a reading highlight.</li><li><strong>Chunking:</strong> shows groups of words at a time.</li><li><strong>Speed Test:</strong> measures time, total words, and WPM.</li>",
+          howTitle: "How to use it",
+          howText: "Choose a tab, paste your text, adjust the speed if needed, and click start. Each mode was designed to be clear, direct, and easy to use on your computer or phone.",
+          tabFocus: "Focus",
+          tabSpeed: "Speed Test",
+          footer: "Static project, easy to edit and ready to publish as a website.",
+          labels: {
+            configureText: "Set up text",
+            pasteText: "Paste or type the text",
+            speed: "Speed:",
+            wordsPerMinute: "words per minute",
+            blocksPerMinute: "blocks per minute",
+            wordsPerChunk: "Words per chunk",
+            timer: "Timer",
+            configureTest: "Set up test",
+            words: "Words",
+            position: "Position",
+            status: "Status",
+            blocks: "Blocks",
+            time: "Time",
+            result: "Result"
+          },
+          buttons: {
+            start: "Start",
+            pause: "Pause",
+            reset: "Reset",
+            stop: "Stop"
+          },
+          hints: {
+            rsvp: "The higher the number, the faster the words will appear.",
+            focus: "Use a lower speed if you want to follow more calmly.",
+            chunkSize: "A smaller value creates shorter chunks. A larger value shows more words at once.",
+            chunkSpeed: "Here the speed means how many chunks appear per minute."
+          },
+          panel: {
+            rsvpDesc: "In this mode, the text appears one word at a time in the center of the screen. It is useful for training rhythm and visual focus.",
+            focusTitle: "Focus",
+            focusDesc: "In this mode, the full text stays visible and one word is highlighted at a time. This helps you train reading while keeping the full context on screen.",
+            chunkDesc: "In this mode, words appear in small groups. This can help you notice phrases instead of reading one word at a time.",
+            speedTitle: "Speed Test",
+            speedDesc: "This mode measures your reading pace using a full text. Paste the text, click start, read at your own rhythm, and stop when you finish. At the end, the page calculates time, total words, and WPM."
+          }
+        },
+        samples: {
+          rsvp: "Reading with consistency and practice can help you gain rhythm, focus, and confidence. Use this mode to follow one word at a time in the center of the screen.",
+          focus: "Reading with visual focus can be more comfortable for people who prefer to see the full text while following one highlighted word at a time.",
+          chunking: "Reading in chunks can improve your sense of structure and reduce unnecessary pauses. Adjust the chunk size and see what works best for you.",
+          speed: "This sample text is here for the speed test. When you are ready, click start, read calmly, and press stop when you finish. The system will calculate your time and words per minute automatically."
+        },
+        defaultEmptyMessage: {
+          rsvp: "Paste a text and click Start",
+          focus: '<p class="empty-state">Paste a text, adjust the speed, and click Start to follow the reading with a visual highlight.</p>',
+          chunking: "Paste a text and click Start",
+          speed: "Paste a text, click Start, and read normally. When you finish, click Stop."
+        },
+        status: {
+          stopped: "Stopped",
+          reading: "Reading",
+          paused: "Paused",
+          done: "Finished"
+        },
+        alerts: {
+          invalidText: "Type or paste a valid text to begin.",
+          speedInvalid: "Type or paste a valid text before starting the test.",
+          speedRunning: "Reading in progress. When you finish, click Stop.",
+          speedWaiting: "When you finish reading and click Stop, the result will appear here."
+        },
+        resultText: "You read <strong>{words} words</strong> in <strong>{time}</strong>. Your speed was <strong>{wpm} WPM</strong>."
+      },
+      pt: {
+        static: {
+          heroEyebrow: "Treino de leitura sem complicacao",
+          heroTitle: "Sua leitura inteligente comeca aqui",
+          heroDescription: "Este site fornece ferramentas para praticar leitura dinamica de forma simples. Voce cola um texto, escolhe um modo e treina direto no navegador.",
+          heroKicker: "Leitura inteligente com ritmo, foco e clareza.",
+          heroCtaMain: "Comecar agora",
+          heroCtaSpeed: "Testar velocidade",
+          highlight1Title: "4 modos de treino",
+          highlight1Text: "Uma experiencia simples para praticar ritmo, foco e velocidade.",
+          highlight2Title: "Sem cadastro",
+          highlight2Text: "Abra a pagina, cole um texto e comece imediatamente.",
+          highlight3Title: "Feito para ser leve",
+          highlight3Text: "Funciona direto no navegador, inclusive em telas menores.",
+          overviewTitle: "O que voce encontra aqui",
+          overviewList: "<li><strong>RSVP:</strong> mostra uma palavra por vez.</li><li><strong>Foco:</strong> mostra o texto completo com destaque visual da leitura.</li><li><strong>Chunking:</strong> mostra blocos de palavras por vez.</li><li><strong>Teste de Velocidade:</strong> mede tempo, total de palavras e PPM.</li>",
+          howTitle: "Como usar",
+          howText: "Escolha uma aba, cole o seu texto, ajuste a velocidade se quiser e clique em iniciar. Cada modo foi pensado para ser direto, claro e facil de usar no seu computador.",
+          tabFocus: "Foco",
+          tabSpeed: "Teste de Velocidade",
+          footer: "Projeto estatico, simples de editar e pronto para publicar como pagina web.",
+          labels: {
+            configureText: "Configurar texto",
+            pasteText: "Cole ou digite o texto",
+            speed: "Velocidade:",
+            wordsPerMinute: "palavras por minuto",
+            blocksPerMinute: "blocos por minuto",
+            wordsPerChunk: "Palavras por bloco",
+            timer: "Cronometro",
+            configureTest: "Configurar teste",
+            words: "Palavras",
+            position: "Posicao",
+            status: "Status",
+            blocks: "Blocos",
+            time: "Tempo",
+            result: "Resultado"
+          },
+          buttons: {
+            start: "Iniciar",
+            pause: "Pausar",
+            reset: "Reiniciar",
+            stop: "Parar"
+          },
+          hints: {
+            rsvp: "Quanto maior o numero, mais rapido as palavras vao aparecer.",
+            focus: "Use uma velocidade menor se quiser acompanhar com mais calma.",
+            chunkSize: "Um valor pequeno deixa os blocos mais curtos. Um valor maior mostra mais palavras de cada vez.",
+            chunkSpeed: "Aqui a velocidade representa quantos blocos aparecem por minuto."
+          },
+          panel: {
+            rsvpDesc: "Neste modo, o texto aparece palavra por palavra no centro da tela. Ele e bom para treino de ritmo e foco visual.",
+            focusTitle: "Foco",
+            focusDesc: "Neste modo, o texto inteiro fica visivel e uma palavra vai sendo destacada. Isso ajuda a treinar leitura com contexto completo na tela.",
+            chunkDesc: "Neste modo, as palavras aparecem em pequenos blocos. Isso pode ajudar voce a perceber grupos de palavras em vez de ler uma a uma.",
+            speedTitle: "Teste de Velocidade",
+            speedDesc: "Este modo mede sua leitura em um texto inteiro. Voce cola o texto, clica em iniciar, le no seu ritmo e para quando terminar. No final, o site calcula o tempo, o total de palavras e o seu PPM."
+          }
+        },
+        samples: {
+          rsvp: "Ler com consistencia e treino pode ajudar voce a ganhar ritmo, foco e confianca. Use este modo para acompanhar uma palavra por vez no centro da tela.",
+          focus: "A leitura com foco visual pode ser mais confortavel para quem prefere enxergar o texto completo enquanto acompanha uma palavra destacada de cada vez.",
+          chunking: "Ler em blocos pode melhorar a percepcao de estrutura e reduzir pausas desnecessarias. Ajuste o tamanho do bloco e observe o que funciona melhor para voce.",
+          speed: "Este texto serve como exemplo para o teste de velocidade. Quando estiver pronto, clique em iniciar, leia com calma e aperte parar ao finalizar. O sistema vai calcular automaticamente o tempo e a quantidade de palavras por minuto."
+        },
+        defaultEmptyMessage: {
+          rsvp: "Cole um texto e clique em Iniciar",
+          focus: '<p class="empty-state">Cole um texto, ajuste a velocidade e clique em Iniciar para acompanhar a leitura com destaque visual.</p>',
+          chunking: "Cole um texto e clique em Iniciar",
+          speed: "Cole um texto, clique em Iniciar e leia normalmente. Quando terminar, clique em Parar."
+        },
+        status: {
+          stopped: "Parado",
+          reading: "Lendo",
+          paused: "Pausado",
+          done: "Concluido"
+        },
+        alerts: {
+          invalidText: "Digite ou cole um texto valido para comecar.",
+          speedInvalid: "Digite ou cole um texto valido antes de iniciar o teste.",
+          speedRunning: "Leitura em andamento. Quando terminar, clique em Parar.",
+          speedWaiting: "Quando voce finalizar a leitura e clicar em Parar, o resultado vai aparecer aqui."
+        },
+        resultText: "Voce leu <strong>{words} palavras</strong> em <strong>{time}</strong>. Sua velocidade foi de <strong>{wpm} PPM</strong>."
+      },
+      es: {
+        static: {
+          heroEyebrow: "Practica de lectura sin complicaciones",
+          heroTitle: "Tu lectura inteligente comienza aqui",
+          heroDescription: "Este sitio ofrece herramientas simples para practicar lectura rapida. Pega un texto, elige un modo y entrena directamente en tu navegador.",
+          heroKicker: "Lectura inteligente con ritmo, foco y claridad.",
+          heroCtaMain: "Empezar ahora",
+          heroCtaSpeed: "Probar velocidad",
+          highlight1Title: "4 modos de entrenamiento",
+          highlight1Text: "Una experiencia simple para practicar ritmo, enfoque y velocidad.",
+          highlight2Title: "Sin registro",
+          highlight2Text: "Abre la pagina, pega un texto y empieza de inmediato.",
+          highlight3Title: "Ligero y practico",
+          highlight3Text: "Funciona directamente en el navegador, incluso en pantallas pequenas.",
+          overviewTitle: "Lo que encontraras aqui",
+          overviewList: "<li><strong>RSVP:</strong> muestra una palabra a la vez.</li><li><strong>Foco:</strong> muestra el texto completo con resaltado visual.</li><li><strong>Chunking:</strong> muestra bloques de palabras.</li><li><strong>Prueba de Velocidad:</strong> mide tiempo, total de palabras y PPM.</li>",
+          howTitle: "Como usarlo",
+          howText: "Elige una pestaña, pega tu texto, ajusta la velocidad si quieres y haz clic en iniciar. Cada modo fue pensado para ser claro, directo y facil de usar.",
+          tabFocus: "Foco",
+          tabSpeed: "Prueba de Velocidad",
+          footer: "Proyecto estatico, facil de editar y listo para publicar como sitio web.",
+          labels: {
+            configureText: "Configurar texto",
+            pasteText: "Pega o escribe el texto",
+            speed: "Velocidad:",
+            wordsPerMinute: "palabras por minuto",
+            blocksPerMinute: "bloques por minuto",
+            wordsPerChunk: "Palabras por bloque",
+            timer: "Cronometro",
+            configureTest: "Configurar prueba",
+            words: "Palabras",
+            position: "Posicion",
+            status: "Estado",
+            blocks: "Bloques",
+            time: "Tiempo",
+            result: "Resultado"
+          },
+          buttons: {
+            start: "Iniciar",
+            pause: "Pausar",
+            reset: "Reiniciar",
+            stop: "Detener"
+          },
+          hints: {
+            rsvp: "Cuanto mayor sea el numero, mas rapido apareceran las palabras.",
+            focus: "Usa una velocidad menor si quieres seguir con mas calma.",
+            chunkSize: "Un valor pequeno crea bloques mas cortos. Un valor mayor muestra mas palabras a la vez.",
+            chunkSpeed: "Aqui la velocidad representa cuantos bloques aparecen por minuto."
+          },
+          panel: {
+            rsvpDesc: "En este modo, el texto aparece palabra por palabra en el centro de la pantalla. Es util para entrenar ritmo y enfoque visual.",
+            focusTitle: "Foco",
+            focusDesc: "En este modo, el texto completo permanece visible y una palabra se resalta cada vez. Esto ayuda a entrenar la lectura con el contexto completo en pantalla.",
+            chunkDesc: "En este modo, las palabras aparecen en pequenos bloques. Esto puede ayudarte a percibir grupos de palabras en lugar de leer una por una.",
+            speedTitle: "Prueba de Velocidad",
+            speedDesc: "Este modo mide tu lectura con un texto completo. Pega el texto, haz clic en iniciar, lee a tu ritmo y detente al terminar. Al final, la pagina calcula el tiempo, el total de palabras y tu PPM."
+          }
+        },
+        samples: {
+          rsvp: "Leer con constancia y practica puede ayudarte a ganar ritmo, enfoque y confianza. Usa este modo para seguir una palabra a la vez en el centro de la pantalla.",
+          focus: "La lectura con enfoque visual puede ser mas comoda para quienes prefieren ver el texto completo mientras siguen una palabra resaltada a la vez.",
+          chunking: "Leer en bloques puede mejorar la percepcion de la estructura y reducir pausas innecesarias. Ajusta el tamano del bloque y observa que funciona mejor para ti.",
+          speed: "Este texto sirve como ejemplo para la prueba de velocidad. Cuando estes listo, haz clic en iniciar, lee con calma y pulsa detener al terminar. El sistema calculara automaticamente tu tiempo y palabras por minuto."
+        },
+        defaultEmptyMessage: {
+          rsvp: "Pega un texto y haz clic en Iniciar",
+          focus: '<p class="empty-state">Pega un texto, ajusta la velocidad y haz clic en Iniciar para seguir la lectura con resaltado visual.</p>',
+          chunking: "Pega un texto y haz clic en Iniciar",
+          speed: "Pega un texto, haz clic en Iniciar y lee con normalidad. Cuando termines, haz clic en Detener."
+        },
+        status: {
+          stopped: "Detenido",
+          reading: "Leyendo",
+          paused: "Pausado",
+          done: "Finalizado"
+        },
+        alerts: {
+          invalidText: "Escribe o pega un texto valido para comenzar.",
+          speedInvalid: "Escribe o pega un texto valido antes de iniciar la prueba.",
+          speedRunning: "Lectura en curso. Cuando termines, haz clic en Detener.",
+          speedWaiting: "Cuando termines de leer y hagas clic en Detener, el resultado aparecera aqui."
+        },
+        resultText: "Leiste <strong>{words} palabras</strong> en <strong>{time}</strong>. Tu velocidad fue de <strong>{wpm} PPM</strong>."
+      },
+      zh: {
+        static: {
+          heroEyebrow: "轻松进行阅读训练",
+          heroTitle: "智能阅读，从这里开始",
+          heroDescription: "这个页面提供简单的速读训练工具。粘贴文本，选择模式，然后直接在浏览器中练习。",
+          heroKicker: "更有节奏、更专注、更清晰的阅读体验。",
+          heroCtaMain: "立即开始",
+          heroCtaSpeed: "测试速度",
+          highlight1Title: "4种训练模式",
+          highlight1Text: "用简单的方式练习节奏、专注和速度。",
+          highlight2Title: "无需注册",
+          highlight2Text: "打开页面，粘贴文本，马上开始。",
+          highlight3Title: "轻量易用",
+          highlight3Text: "直接在浏览器中运行，也适合较小的屏幕。",
+          overviewTitle: "这里有什么",
+          overviewList: "<li><strong>RSVP:</strong> 一次显示一个单词。</li><li><strong>Focus:</strong> 显示完整文本并突出当前阅读位置。</li><li><strong>Chunking:</strong> 按词组分块显示。</li><li><strong>Speed Test:</strong> 计算时间、总词数和每分钟词数。</li>",
+          howTitle: "如何使用",
+          howText: "选择一个标签页，粘贴文本，如有需要调整速度，然后点击开始。每种模式都尽量做到清晰、直接、易于使用。",
+          tabFocus: "Focus",
+          tabSpeed: "Speed Test",
+          footer: "静态项目，易于编辑，也便于发布为网站。",
+          labels: {
+            configureText: "设置文本",
+            pasteText: "粘贴或输入文本",
+            speed: "速度：",
+            wordsPerMinute: "词 / 分钟",
+            blocksPerMinute: "块 / 分钟",
+            wordsPerChunk: "每块词数",
+            timer: "计时器",
+            configureTest: "设置测试",
+            words: "词数",
+            position: "位置",
+            status: "状态",
+            blocks: "块数",
+            time: "时间",
+            result: "结果"
+          },
+          buttons: {
+            start: "开始",
+            pause: "暂停",
+            reset: "重置",
+            stop: "停止"
+          },
+          hints: {
+            rsvp: "数值越大，单词出现得越快。",
+            focus: "如果想更从容地跟随阅读，可以使用较低速度。",
+            chunkSize: "较小的数值会产生更短的词块，较大的数值会一次显示更多单词。",
+            chunkSpeed: "这里的速度表示每分钟显示多少个词块。"
+          },
+          panel: {
+            rsvpDesc: "此模式会在屏幕中央一次显示一个单词，适合训练节奏和视觉专注。",
+            focusTitle: "Focus",
+            focusDesc: "此模式会显示完整文本，并逐个突出显示当前单词，帮助你在保留上下文的同时训练阅读。",
+            chunkDesc: "此模式会以小词组显示文本，有助于你按词组而不是逐词阅读。",
+            speedTitle: "Speed Test",
+            speedDesc: "此模式用于测量完整文本的阅读速度。粘贴文本，点击开始，按自己的节奏阅读，结束后点击停止。页面会计算总时间、总词数和每分钟词数。"
+          }
+        },
+        samples: {
+          rsvp: "持续练习阅读可以帮助你提升节奏、专注力和自信。使用这个模式，在屏幕中央一次跟随一个单词。",
+          focus: "对于喜欢在阅读时看到完整上下文的人来说，视觉聚焦模式会更舒服，因为它会逐个突出当前单词。",
+          chunking: "按词组阅读可以帮助你更好地感知结构，减少不必要的停顿。你可以调整每组词数，看看哪种更适合自己。",
+          speed: "这段示例文字用于阅读速度测试。准备好后，点击开始，平静阅读，读完后点击停止。系统会自动计算总时间和每分钟词数。"
+        },
+        defaultEmptyMessage: {
+          rsvp: "粘贴文本后点击开始",
+          focus: '<p class="empty-state">粘贴文本，调整速度，然后点击开始以带高亮地跟随阅读。</p>',
+          chunking: "粘贴文本后点击开始",
+          speed: "粘贴文本，点击开始并正常阅读。结束后点击停止。"
+        },
+        status: {
+          stopped: "已停止",
+          reading: "阅读中",
+          paused: "已暂停",
+          done: "已完成"
+        },
+        alerts: {
+          invalidText: "请输入或粘贴有效文本后再开始。",
+          speedInvalid: "开始测试前，请输入或粘贴有效文本。",
+          speedRunning: "阅读进行中。完成后请点击停止。",
+          speedWaiting: "完成阅读并点击停止后，结果会显示在这里。"
+        },
+        resultText: "你在 <strong>{time}</strong> 内读了 <strong>{words} 个词</strong>，速度为 <strong>{wpm} 词/分钟</strong>。"
+      }
     };
+
+    let currentLanguage = "en";
+    let defaultEmptyMessage = {};
 
     const tabs = document.querySelectorAll(".tab-button");
     const panels = {
@@ -445,15 +1107,171 @@
       speed: document.getElementById("speed-panel")
     };
 
+    function activateTab(tab) {
+      tabs.forEach((item) => item.classList.toggle("active", item.dataset.tab === tab));
+      Object.entries(panels).forEach(([key, panel]) => {
+        panel.classList.toggle("active", key === tab);
+      });
+    }
+
     tabs.forEach((button) => {
       button.addEventListener("click", () => {
-        const tab = button.dataset.tab;
-        tabs.forEach((item) => item.classList.toggle("active", item === button));
-        Object.entries(panels).forEach(([key, panel]) => {
-          panel.classList.toggle("active", key === tab);
-        });
+        activateTab(button.dataset.tab);
       });
     });
+
+    document.querySelectorAll("[data-open-tab]").forEach((link) => {
+      link.addEventListener("click", () => {
+        activateTab(link.dataset.openTab);
+      });
+    });
+
+    const languageSelect = document.getElementById("language-select");
+
+    function t() {
+      return translations[currentLanguage];
+    }
+
+    function setStatus(element, key) {
+      element.dataset.statusKey = key;
+      element.textContent = t().status[key];
+    }
+
+    function updateSampleIfUntouched(textarea, nextValue) {
+      const allSamples = Object.values(translations).flatMap((lang) => Object.values(lang.samples));
+      if (!textarea.value.trim() || allSamples.includes(textarea.value)) {
+        textarea.value = nextValue;
+      }
+    }
+
+    function updateStaticTexts() {
+      const lang = t();
+      defaultEmptyMessage = lang.defaultEmptyMessage;
+
+      document.getElementById("hero-eyebrow").textContent = lang.static.heroEyebrow;
+      document.getElementById("hero-title").textContent = lang.static.heroTitle;
+      document.getElementById("hero-description").textContent = lang.static.heroDescription;
+      document.getElementById("hero-kicker").textContent = lang.static.heroKicker;
+      document.querySelector('[data-open-tab="rsvp"]').textContent = lang.static.heroCtaMain;
+      document.querySelector('[data-open-tab="speed"]').textContent = lang.static.heroCtaSpeed;
+
+      const highlights = document.querySelectorAll(".hero-highlight");
+      highlights[0].querySelector("strong").textContent = lang.static.highlight1Title;
+      highlights[0].querySelector("span").textContent = lang.static.highlight1Text;
+      highlights[1].querySelector("strong").textContent = lang.static.highlight2Title;
+      highlights[1].querySelector("span").textContent = lang.static.highlight2Text;
+      highlights[2].querySelector("strong").textContent = lang.static.highlight3Title;
+      highlights[2].querySelector("span").textContent = lang.static.highlight3Text;
+
+      document.querySelector(".hero-grid .hero-card:first-child h2").textContent = lang.static.overviewTitle;
+      document.getElementById("overview-list")?.remove();
+      document.querySelector(".hero-grid .hero-card:first-child ul").innerHTML = lang.static.overviewList;
+      document.querySelector(".hero-grid .hero-card:last-child h2").textContent = lang.static.howTitle;
+      document.querySelector(".hero-grid .hero-card:last-child p").textContent = lang.static.howText;
+
+      document.getElementById("tab-rsvp") ? document.getElementById("tab-rsvp").textContent = "RSVP" : document.querySelector('.tab-button[data-tab="rsvp"]').textContent = "RSVP";
+      document.querySelector('.tab-button[data-tab="focus"]').textContent = lang.static.tabFocus;
+      document.querySelector('.tab-button[data-tab="chunking"]').textContent = "Chunking";
+      document.querySelector('.tab-button[data-tab="speed"]').textContent = lang.static.tabSpeed;
+
+      document.querySelector("#rsvp-panel .panel-header h2").textContent = "RSVP";
+      document.querySelector("#rsvp-panel .panel-header p").textContent = lang.static.panel.rsvpDesc;
+      document.querySelector("#focus-panel .panel-header h2").textContent = lang.static.panel.focusTitle;
+      document.querySelector("#focus-panel .panel-header p").textContent = lang.static.panel.focusDesc;
+      document.querySelector("#chunking-panel .panel-header h2").textContent = "Chunking";
+      document.querySelector("#chunking-panel .panel-header p").textContent = lang.static.panel.chunkDesc;
+      document.querySelector("#speed-panel .panel-header h2").textContent = lang.static.panel.speedTitle;
+      document.querySelector("#speed-panel .panel-header p").textContent = lang.static.panel.speedDesc;
+
+      document.querySelector("#rsvp-panel .card h3").textContent = lang.static.labels.configureText;
+      document.querySelector("#focus-panel .card h3").textContent = lang.static.labels.configureText;
+      document.querySelector("#chunking-panel .card h3").textContent = lang.static.labels.configureText;
+      document.querySelector("#speed-panel .card h3").textContent = lang.static.labels.configureTest;
+
+      document.querySelector('label[for="rsvp-text"]').textContent = lang.static.labels.pasteText;
+      document.querySelector('label[for="focus-text"]').textContent = lang.static.labels.pasteText;
+      document.querySelector('label[for="chunking-text"]').textContent = lang.static.labels.pasteText;
+      document.querySelector('label[for="speed-text"]').textContent = lang.static.labels.pasteText;
+
+      document.querySelector('label[for="chunking-size"]').textContent = lang.static.labels.wordsPerChunk;
+      document.querySelector('#speed-panel .field label:not([for])').textContent = lang.static.labels.timer;
+
+      document.querySelector("#rsvp-start").textContent = lang.static.buttons.start;
+      document.querySelector("#rsvp-pause").textContent = lang.static.buttons.pause;
+      document.querySelector("#rsvp-reset").textContent = lang.static.buttons.reset;
+      document.querySelector("#focus-start").textContent = lang.static.buttons.start;
+      document.querySelector("#focus-pause").textContent = lang.static.buttons.pause;
+      document.querySelector("#focus-reset").textContent = lang.static.buttons.reset;
+      document.querySelector("#chunking-start").textContent = lang.static.buttons.start;
+      document.querySelector("#chunking-pause").textContent = lang.static.buttons.pause;
+      document.querySelector("#chunking-reset").textContent = lang.static.buttons.reset;
+      document.querySelector("#speed-start").textContent = lang.static.buttons.start;
+      document.querySelector("#speed-stop").textContent = lang.static.buttons.stop;
+      document.querySelector("#speed-reset").textContent = lang.static.buttons.reset;
+
+      document.querySelector("#rsvp-panel .hint").textContent = lang.static.hints.rsvp;
+      document.querySelector("#focus-panel .hint").textContent = lang.static.hints.focus;
+      document.querySelectorAll("#chunking-panel .hint")[0].textContent = lang.static.hints.chunkSize;
+      document.querySelectorAll("#chunking-panel .hint")[1].textContent = lang.static.hints.chunkSpeed;
+
+      const statLabels = document.querySelectorAll(".stat-label");
+      statLabels[0].textContent = lang.static.labels.words;
+      statLabels[1].textContent = lang.static.labels.position;
+      statLabels[2].textContent = lang.static.labels.status;
+      statLabels[3].textContent = lang.static.labels.words;
+      statLabels[4].textContent = lang.static.labels.position;
+      statLabels[5].textContent = lang.static.labels.status;
+      statLabels[6].textContent = lang.static.labels.blocks;
+      statLabels[7].textContent = lang.static.labels.position;
+      statLabels[8].textContent = lang.static.labels.status;
+      statLabels[9].textContent = lang.static.labels.words;
+      statLabels[10].textContent = lang.static.labels.time;
+      statLabels[11].textContent = "PPM";
+
+      document.querySelector("#speed-result h3").textContent = lang.static.labels.result;
+      document.querySelector(".footer-note").textContent = lang.static.footer;
+
+      document.querySelector('label[for="rsvp-speed"]').childNodes[0].textContent = lang.static.labels.speed + " ";
+      document.querySelector('label[for="focus-speed"]').childNodes[0].textContent = lang.static.labels.speed + " ";
+      document.querySelector('label[for="chunking-speed"]').childNodes[0].textContent = lang.static.labels.speed + " ";
+
+      document.querySelector('label[for="rsvp-speed"]').lastChild.textContent = " " + lang.static.labels.wordsPerMinute;
+      document.querySelector('label[for="focus-speed"]').lastChild.textContent = " " + lang.static.labels.wordsPerMinute;
+      document.querySelector('label[for="chunking-speed"]').lastChild.textContent = " " + lang.static.labels.blocksPerMinute;
+
+      updateSampleIfUntouched(document.getElementById("rsvp-text"), lang.samples.rsvp);
+      updateSampleIfUntouched(document.getElementById("focus-text"), lang.samples.focus);
+      updateSampleIfUntouched(document.getElementById("chunking-text"), lang.samples.chunking);
+      updateSampleIfUntouched(document.getElementById("speed-text"), lang.samples.speed);
+
+      [document.getElementById("rsvp-status"), document.getElementById("focus-status"), document.getElementById("chunking-status")].forEach((el) => {
+        setStatus(el, el.dataset.statusKey || "stopped");
+      });
+
+      if (!document.getElementById("speed-result").dataset.completed) {
+        document.querySelector("#speed-result p").textContent = lang.alerts.speedWaiting;
+      }
+
+      if (!document.getElementById("rsvp-display").dataset.hasContent) {
+        document.getElementById("rsvp-display").textContent = defaultEmptyMessage.rsvp;
+      }
+      if (!document.getElementById("chunking-display").dataset.hasContent) {
+        document.getElementById("chunking-display").textContent = defaultEmptyMessage.chunking;
+      }
+      if (!document.getElementById("speed-display").dataset.hasContent) {
+        document.getElementById("speed-display").textContent = defaultEmptyMessage.speed;
+      }
+      if (!document.getElementById("focus-display").dataset.hasContent) {
+        document.getElementById("focus-display").innerHTML = defaultEmptyMessage.focus;
+      }
+    }
+
+    function applyLanguage(language) {
+      currentLanguage = language;
+      updateStaticTexts();
+      renderSpeedText();
+      renderFocus();
+    }
 
     function splitWords(text) {
       return text.trim().split(/\s+/).filter(Boolean);
@@ -463,6 +1281,13 @@
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
       return String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+    }
+
+    function scrollToReadingArea(element) {
+      if (window.innerWidth > 920 || !element) return;
+      window.setTimeout(() => {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 120);
     }
 
     function stopTimerIfExists(mode) {
@@ -479,9 +1304,10 @@
       mode.index = 0;
       mode.running = false;
       mode.display.innerHTML = emptyMessage;
+      mode.display.dataset.hasContent = "";
       mode.indexEl.textContent = "0";
       mode.totalEl.textContent = "0";
-      mode.statusEl.textContent = "Parado";
+      setStatus(mode.statusEl, "stopped");
     }
 
     const rsvpMode = {
@@ -505,7 +1331,7 @@
       const words = splitWords(rsvpMode.text.value);
       if (!words.length) {
         resetCommonMode(rsvpMode, defaultEmptyMessage.rsvp);
-        rsvpMode.display.textContent = "Digite ou cole um texto valido para comecar.";
+        rsvpMode.display.textContent = t().alerts.invalidText;
         return false;
       }
       rsvpMode.words = words;
@@ -517,10 +1343,11 @@
       if (rsvpMode.index >= rsvpMode.words.length) {
         stopTimerIfExists(rsvpMode);
         rsvpMode.running = false;
-        rsvpMode.statusEl.textContent = "Concluido";
+        setStatus(rsvpMode.statusEl, "done");
         return;
       }
       rsvpMode.display.textContent = rsvpMode.words[rsvpMode.index];
+      rsvpMode.display.dataset.hasContent = "true";
       rsvpMode.index += 1;
       rsvpMode.indexEl.textContent = String(rsvpMode.index);
     }
@@ -529,7 +1356,8 @@
       if (!rsvpMode.words.length && !prepareRsvp()) return;
       stopTimerIfExists(rsvpMode);
       rsvpMode.running = true;
-      rsvpMode.statusEl.textContent = "Lendo";
+      setStatus(rsvpMode.statusEl, "reading");
+      scrollToReadingArea(rsvpMode.display.closest(".display"));
       runRsvp();
       const interval = Math.max(60, Math.round(60000 / Number(rsvpMode.speed.value)));
       rsvpMode.timer = setInterval(runRsvp, interval);
@@ -551,7 +1379,7 @@
     rsvpMode.pauseBtn.addEventListener("click", () => {
       stopTimerIfExists(rsvpMode);
       rsvpMode.running = false;
-      rsvpMode.statusEl.textContent = "Pausado";
+      setStatus(rsvpMode.statusEl, "paused");
     });
 
     rsvpMode.resetBtn.addEventListener("click", () => {
@@ -579,6 +1407,7 @@
     function renderFocus() {
       if (!focusMode.words.length) {
         focusMode.display.innerHTML = defaultEmptyMessage.focus;
+        focusMode.display.dataset.hasContent = "";
         return;
       }
       const html = focusMode.words.map((word, index) => {
@@ -586,6 +1415,7 @@
         return '<span class="' + activeClass + '">' + word + "</span>";
       }).join(" ");
       focusMode.display.innerHTML = "<p>" + html + "</p>";
+      focusMode.display.dataset.hasContent = "true";
     }
 
     function prepareFocus() {
@@ -604,7 +1434,7 @@
       if (focusMode.index >= focusMode.words.length) {
         stopTimerIfExists(focusMode);
         focusMode.running = false;
-        focusMode.statusEl.textContent = "Concluido";
+        setStatus(focusMode.statusEl, "done");
         focusMode.index = focusMode.words.length - 1;
         renderFocus();
         focusMode.indexEl.textContent = String(focusMode.words.length);
@@ -619,7 +1449,8 @@
       if (!focusMode.words.length && !prepareFocus()) return;
       stopTimerIfExists(focusMode);
       focusMode.running = true;
-      focusMode.statusEl.textContent = "Lendo";
+      setStatus(focusMode.statusEl, "reading");
+      scrollToReadingArea(focusMode.display.closest(".display"));
       runFocus();
       const interval = Math.max(80, Math.round(60000 / Number(focusMode.speed.value)));
       focusMode.timer = setInterval(runFocus, interval);
@@ -641,7 +1472,7 @@
     focusMode.pauseBtn.addEventListener("click", () => {
       stopTimerIfExists(focusMode);
       focusMode.running = false;
-      focusMode.statusEl.textContent = "Pausado";
+      setStatus(focusMode.statusEl, "paused");
     });
 
     focusMode.resetBtn.addEventListener("click", () => {
@@ -680,7 +1511,7 @@
       const size = Math.max(2, Number(chunkingMode.size.value) || 3);
       if (!words.length) {
         resetCommonMode(chunkingMode, defaultEmptyMessage.chunking);
-        chunkingMode.display.textContent = "Digite ou cole um texto valido para comecar.";
+        chunkingMode.display.textContent = t().alerts.invalidText;
         return false;
       }
       chunkingMode.chunks = buildChunks(words, size);
@@ -692,10 +1523,11 @@
       if (chunkingMode.index >= chunkingMode.chunks.length) {
         stopTimerIfExists(chunkingMode);
         chunkingMode.running = false;
-        chunkingMode.statusEl.textContent = "Concluido";
+        setStatus(chunkingMode.statusEl, "done");
         return;
       }
       chunkingMode.display.textContent = chunkingMode.chunks[chunkingMode.index];
+      chunkingMode.display.dataset.hasContent = "true";
       chunkingMode.index += 1;
       chunkingMode.indexEl.textContent = String(chunkingMode.index);
     }
@@ -704,7 +1536,8 @@
       if (!chunkingMode.chunks.length && !prepareChunking()) return;
       stopTimerIfExists(chunkingMode);
       chunkingMode.running = true;
-      chunkingMode.statusEl.textContent = "Lendo";
+      setStatus(chunkingMode.statusEl, "reading");
+      scrollToReadingArea(chunkingMode.display.closest(".display"));
       runChunking();
       const interval = Math.max(120, Math.round(60000 / Number(chunkingMode.speed.value)));
       chunkingMode.timer = setInterval(runChunking, interval);
@@ -726,7 +1559,7 @@
     chunkingMode.pauseBtn.addEventListener("click", () => {
       stopTimerIfExists(chunkingMode);
       chunkingMode.running = false;
-      chunkingMode.statusEl.textContent = "Pausado";
+      setStatus(chunkingMode.statusEl, "paused");
     });
 
     chunkingMode.resetBtn.addEventListener("click", () => {
@@ -753,6 +1586,7 @@
     function renderSpeedText() {
       const text = speedMode.text.value.trim();
       speedMode.display.textContent = text || defaultEmptyMessage.speed;
+      speedMode.display.dataset.hasContent = text ? "true" : "";
       speedMode.wordsEl.textContent = String(splitWords(text).length);
     }
 
@@ -766,14 +1600,17 @@
       const words = splitWords(speedMode.text.value);
       if (!words.length) {
         renderSpeedText();
-        speedMode.resultEl.innerHTML = "<h3>Resultado</h3><p>Digite ou cole um texto valido antes de iniciar o teste.</p>";
+        speedMode.resultEl.dataset.completed = "";
+        speedMode.resultEl.innerHTML = "<h3>" + t().static.labels.result + "</h3><p>" + t().alerts.speedInvalid + "</p>";
         return;
       }
       renderSpeedText();
       if (speedMode.running) return;
       speedMode.running = true;
+      scrollToReadingArea(speedMode.display.closest(".display"));
       speedMode.timer = setInterval(updateSpeedTimer, 1000);
-      speedMode.resultEl.innerHTML = "<h3>Resultado</h3><p>Leitura em andamento. Quando terminar, clique em Parar.</p>";
+      speedMode.resultEl.dataset.completed = "";
+      speedMode.resultEl.innerHTML = "<h3>" + t().static.labels.result + "</h3><p>" + t().alerts.speedRunning + "</p>";
     }
 
     function stopSpeedTest() {
@@ -787,9 +1624,12 @@
       speedMode.wordsEl.textContent = String(wordCount);
       speedMode.totalTimeEl.textContent = formatTime(speedMode.seconds);
       speedMode.wpmEl.textContent = String(wpm);
+      speedMode.resultEl.dataset.completed = "true";
       speedMode.resultEl.innerHTML =
-        "<h3>Resultado</h3><p>Voce leu <strong>" + wordCount + " palavras</strong> em <strong>" + formatTime(speedMode.seconds) +
-        "</strong>. Sua velocidade foi de <strong>" + wpm + " PPM</strong>.</p>";
+        "<h3>" + t().static.labels.result + "</h3><p>" + t().resultText
+          .replace("{words}", wordCount)
+          .replace("{time}", formatTime(speedMode.seconds))
+          .replace("{wpm}", wpm) + "</p>";
     }
 
     function resetSpeedTest() {
@@ -800,7 +1640,8 @@
       speedMode.timerEl.textContent = "00:00";
       speedMode.totalTimeEl.textContent = "00:00";
       speedMode.wpmEl.textContent = "0";
-      speedMode.resultEl.innerHTML = "<h3>Resultado</h3><p>Quando voce finalizar a leitura e clicar em Parar, o resultado vai aparecer aqui.</p>";
+      speedMode.resultEl.dataset.completed = "";
+      speedMode.resultEl.innerHTML = "<h3>" + t().static.labels.result + "</h3><p>" + t().alerts.speedWaiting + "</p>";
       renderSpeedText();
     }
 
@@ -808,12 +1649,14 @@
     speedMode.startBtn.addEventListener("click", startSpeedTest);
     speedMode.stopBtn.addEventListener("click", stopSpeedTest);
     speedMode.resetBtn.addEventListener("click", resetSpeedTest);
+    languageSelect.addEventListener("change", (event) => {
+      applyLanguage(event.target.value);
+    });
 
-    renderFocus();
-    renderSpeedText();
     rsvpMode.speedValue.textContent = rsvpMode.speed.value;
     focusMode.speedValue.textContent = focusMode.speed.value;
     chunkingMode.speedValue.textContent = chunkingMode.speed.value;
+    applyLanguage("en");
   </script>
 </body>
 </html>

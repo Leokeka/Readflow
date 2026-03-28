@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/26323643/README.md)
 # Leitura Dinamica
 
 Leitura Dinamica e uma pagina simples para treinar leitura no navegador.
