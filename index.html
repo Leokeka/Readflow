@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leitura Dinamica</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --surface: rgba(255, 252, 246, 0.88);
+      --surface-strong: #fffdf8;
+      --line: rgba(94, 78, 58, 0.14);
+      --text: #2b241b;
+      --muted: #6f6253;
+      --primary: #1f6f5f;
+      --primary-strong: #165549;
+      --accent: #c97d3c;
+      --danger: #b54b4b;
+      --shadow: 0 18px 50px rgba(49, 39, 24, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --font-ui: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      --font-reading: Georgia, "Times New Roman", serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--font-ui);
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(201, 125, 60, 0.18), transparent 32%),
+        radial-gradient(circle at top right, rgba(31, 111, 95, 0.16), transparent 28%),
+        linear-gradient(180deg, #f6f1e7 0%, #f1ece1 48%, #ece7dd 100%);
+      min-height: 100vh;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .hero, .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero { padding: 32px; }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(31, 111, 95, 0.1);
+      color: var(--primary-strong);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .hero p, .panel-header p, .hero-card p, .hero-card li, .hint, .footer-note, .empty-state {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .hero-grid, .layout, .stats, .tabs {
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero-grid { grid-template-columns: 1.6fr 1fr; margin-top: 26px; }
+    .tabs { grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 28px 0 18px; }
+    .layout { grid-template-columns: minmax(280px, 360px) 1fr; }
+    .stats { grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+
+    .hero-card, .card, .stat {
+      background: var(--surface-strong);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+
+    .hero-card, .card { padding: 20px; }
+    .stat { padding: 14px; }
+
+    .hero-card ul { margin: 0; padding-left: 18px; }
+    .hero-card h2, .card h3 { margin: 0 0 12px; font-size: 1.05rem; }
+
+    .tab-button {
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 14px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-button.active { background: var(--primary); color: #fff; }
+
+    .panel { display: none; padding: 28px; }
+    .panel.active { display: block; }
+    .panel-header { margin-bottom: 22px; }
+    .panel-header h2 { margin: 0 0 8px; font-size: 1.6rem; }
+
+    .field { margin-bottom: 14px; }
+    label { display: block; font-size: 0.94rem; font-weight: 700; margin-bottom: 8px; }
+
+    textarea, input[type="number"], input[type="range"] { width: 100%; font: inherit; }
+
+    textarea, input[type="number"] {
+      border: 1px solid rgba(94, 78, 58, 0.2);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea { min-height: 180px; resize: vertical; line-height: 1.6; }
+    input[type="range"] { accent-color: var(--primary); }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button.action {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary { background: var(--primary); color: #fff; }
+    .secondary { background: rgba(31, 111, 95, 0.09); color: var(--primary-strong); }
+    .danger { background: rgba(181, 75, 75, 0.12); color: var(--danger); }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat strong { display: block; margin-top: 8px; font-size: 1.25rem; }
+
+    .display {
+      min-height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .rsvp-word {
+      font-family: var(--font-reading);
+      font-size: clamp(2rem, 6vw, 4.6rem);
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .focus-wrapper, .speed-reader {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: left;
+      font-family: var(--font-reading);
+      line-height: 1.9;
+      font-size: 1.25rem;
+    }
+
+    .focus-word { padding: 0 2px; border-radius: 6px; }
+    .focus-word.active { background: rgba(201, 125, 60, 0.22); color: #7b4215; }
+
+    .chunk-box {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 28px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(31, 111, 95, 0.08), rgba(201, 125, 60, 0.08)), #fff;
+      border: 1px solid var(--line);
+      font-family: var(--font-reading);
+      font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+      line-height: 1.5;
+    }
+
+    .speed-text {
+      min-height: 280px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      white-space: pre-wrap;
+    }
+
+    .timer {
+      display: inline-flex;
+      min-width: 180px;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: rgba(31, 111, 95, 0.1);
+      color: var(--primary-strong);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: rgba(201, 125, 60, 0.1);
+      border: 1px solid rgba(201, 125, 60, 0.2);
+    }
+
+    .footer-note { margin-top: 22px; font-size: 0.92rem; text-align: center; }
+
+    @media (max-width: 920px) {
+      .hero-grid, .layout, .stats { grid-template-columns: 1fr; }
+      .tabs { grid-template-columns: repeat(2, 1fr); }
+      .display { min-height: 320px; }
+    }
+
+    @media (max-width: 600px) {
+      .page { width: min(100% - 20px, 1120px); padding-top: 20px; }
+      .hero, .panel { padding: 20px; }
+      .tabs { grid-template-columns: 1fr; }
+      .controls { flex-direction: column; }
+      button.action { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">Treino de leitura sem complicacao</span>
+      <h1>Leitura Dinamica</h1>
+      <p>Este site fornece ferramentas para praticar leitura dinâmica de forma simples. Voce cola um texto, escolhe um modo e treina direto no navegador.</p>
+      <div class="hero-grid">
+        <div class="hero-card">
+          <h2>O que voce encontra aqui</h2>
+          <ul>
+            <li><strong>RSVP:</strong> mostra uma palavra por vez.</li>
+            <li><strong>Foco:</strong> mostra o texto completo com destaque visual da leitura.</li>
+            <li><strong>Chunking:</strong> mostra blocos de palavras por vez.</li>
+            <li><strong>Teste de Velocidade:</strong> mede tempo, total de palavras e PPM.</li>
+          </ul>
+        </div>
+        <div class="hero-card">
+          <h2>Como usar</h2>
+          <p>Escolha uma aba, cole o seu texto, ajuste a velocidade se quiser e clique em iniciar. Cada modo foi pensado para ser direto, claro e facil de usar no seu computador.</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Modos de leitura">
+      <button class="tab-button active" data-tab="rsvp">RSVP</button>
+      <button class="tab-button" data-tab="focus">Foco</button>
+      <button class="tab-button" data-tab="chunking">Chunking</button>
+      <button class="tab-button" data-tab="speed">Teste de Velocidade</button>
+    </nav>
+
+    <section class="panel active" id="rsvp-panel">
+      <div class="panel-header">
+        <h2>RSVP</h2>
+        <p>Neste modo, o texto aparece palavra por palavra no centro da tela. Ele e bom para treino de ritmo e foco visual.</p>
+      </div>
+      <div class="layout">
+        <div class="card">
+          <h3>Configurar texto</h3>
+          <div class="field">
+            <label for="rsvp-text">Cole ou digite o texto</label>
+            <textarea id="rsvp-text">Ler com consistencia e treino pode ajudar voce a ganhar ritmo, foco e confianca. Use este modo para acompanhar uma palavra por vez no centro da tela.</textarea>
+          </div>
+          <div class="field">
+            <label for="rsvp-speed">Velocidade: <span id="rsvp-speed-value">300</span> palavras por minuto</label>
+            <input id="rsvp-speed" type="range" min="100" max="800" step="10" value="300">
+            <div class="hint">Quanto maior o numero, mais rapido as palavras vao aparecer.</div>
+          </div>
+          <div class="controls">
+            <button class="action primary" id="rsvp-start">Iniciar</button>
+            <button class="action secondary" id="rsvp-pause">Pausar</button>
+            <button class="action danger" id="rsvp-reset">Reiniciar</button>
+          </div>
+          <div class="stats">
+            <div class="stat"><span class="stat-label">Palavras</span><strong id="rsvp-total">0</strong></div>
+            <div class="stat"><span class="stat-label">Posicao</span><strong id="rsvp-index">0</strong></div>
+            <div class="stat"><span class="stat-label">Status</span><strong id="rsvp-status">Parado</strong></div>
+          </div>
+        </div>
+        <div class="card display">
+          <div class="rsvp-word" id="rsvp-display">Cole um texto e clique em Iniciar</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="focus-panel">
+      <div class="panel-header">
+        <h2>Foco</h2>
+        <p>Neste modo, o texto inteiro fica visivel e uma palavra vai sendo destacada. Isso ajuda a treinar leitura com contexto completo na tela.</p>
+      </div>
+      <div class="layout">
+        <div class="card">
+          <h3>Configurar texto</h3>
+          <div class="field">
+            <label for="focus-text">Cole ou digite o texto</label>
+            <textarea id="focus-text">A leitura com foco visual pode ser mais confortavel para quem prefere enxergar o texto completo enquanto acompanha uma palavra destacada de cada vez.</textarea>
+          </div>
+          <div class="field">
+            <label for="focus-speed">Velocidade: <span id="focus-speed-value">220</span> palavras por minuto</label>
+            <input id="focus-speed" type="range" min="80" max="500" step="10" value="220">
+            <div class="hint">Use uma velocidade menor se quiser acompanhar com mais calma.</div>
+          </div>
+          <div class="controls">
+            <button class="action primary" id="focus-start">Iniciar</button>
+            <button class="action secondary" id="focus-pause">Pausar</button>
+            <button class="action danger" id="focus-reset">Reiniciar</button>
+          </div>
+          <div class="stats">
+            <div class="stat"><span class="stat-label">Palavras</span><strong id="focus-total">0</strong></div>
+            <div class="stat"><span class="stat-label">Posicao</span><strong id="focus-index">0</strong></div>
+            <div class="stat"><span class="stat-label">Status</span><strong id="focus-status">Parado</strong></div>
+          </div>
+        </div>
+        <div class="card display">
+          <div class="focus-wrapper" id="focus-display">
+            <p class="empty-state">Cole um texto, ajuste a velocidade e clique em Iniciar para acompanhar a leitura com destaque visual.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="chunking-panel">
+      <div class="panel-header">
+        <h2>Chunking</h2>
+        <p>Neste modo, as palavras aparecem em pequenos blocos. Isso pode ajudar voce a perceber grupos de palavras em vez de ler uma a uma.</p>
+      </div>
+      <div class="layout">
+        <div class="card">
+          <h3>Configurar texto</h3>
+          <div class="field">
+            <label for="chunking-text">Cole ou digite o texto</label>
+            <textarea id="chunking-text">Ler em blocos pode melhorar a percepcao de estrutura e reduzir pausas desnecessarias. Ajuste o tamanho do bloco e observe o que funciona melhor para voce.</textarea>
+          </div>
+          <div class="field">
+            <label for="chunking-size">Palavras por bloco</label>
+            <input id="chunking-size" type="number" min="2" max="8" step="1" value="3">
+            <div class="hint">Um valor pequeno deixa os blocos mais curtos. Um valor maior mostra mais palavras de cada vez.</div>
+          </div>
+          <div class="field">
+            <label for="chunking-speed">Velocidade: <span id="chunking-speed-value">180</span> blocos por minuto</label>
+            <input id="chunking-speed" type="range" min="40" max="360" step="10" value="180">
+            <div class="hint">Aqui a velocidade representa quantos blocos aparecem por minuto.</div>
+          </div>
+          <div class="controls">
+            <button class="action primary" id="chunking-start">Iniciar</button>
+            <button class="action secondary" id="chunking-pause">Pausar</button>
+            <button class="action danger" id="chunking-reset">Reiniciar</button>
+          </div>
+          <div class="stats">
+            <div class="stat"><span class="stat-label">Blocos</span><strong id="chunking-total">0</strong></div>
+            <div class="stat"><span class="stat-label">Posicao</span><strong id="chunking-index">0</strong></div>
+            <div class="stat"><span class="stat-label">Status</span><strong id="chunking-status">Parado</strong></div>
+          </div>
+        </div>
+        <div class="card display">
+          <div class="chunk-box" id="chunking-display">Cole um texto e clique em Iniciar</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="speed-panel">
+      <div class="panel-header">
+        <h2>Teste de Velocidade</h2>
+        <p>Este modo mede sua leitura em um texto inteiro. Voce cola o texto, clica em iniciar, le no seu ritmo e para quando terminar. No final, o site calcula o tempo, o total de palavras e o seu PPM.</p>
+      </div>
+      <div class="layout">
+        <div class="card">
+          <h3>Configurar teste</h3>
+          <div class="field">
+            <label for="speed-text">Cole ou digite o texto</label>
+            <textarea id="speed-text">Este texto serve como exemplo para o teste de velocidade. Quando estiver pronto, clique em iniciar, leia com calma e aperte parar ao finalizar. O sistema vai calcular automaticamente o tempo e a quantidade de palavras por minuto.</textarea>
+          </div>
+          <div class="field">
+            <label>Cronometro</label>
+            <div class="timer" id="speed-timer">00:00</div>
+          </div>
+          <div class="controls">
+            <button class="action primary" id="speed-start">Iniciar</button>
+            <button class="action secondary" id="speed-stop">Parar</button>
+            <button class="action danger" id="speed-reset">Reiniciar</button>
+          </div>
+          <div class="stats">
+            <div class="stat"><span class="stat-label">Palavras</span><strong id="speed-word-count">0</strong></div>
+            <div class="stat"><span class="stat-label">Tempo</span><strong id="speed-total-time">00:00</strong></div>
+            <div class="stat"><span class="stat-label">PPM</span><strong id="speed-wpm">0</strong></div>
+          </div>
+          <div class="result" id="speed-result">
+            <h3>Resultado</h3>
+            <p>Quando voce finalizar a leitura e clicar em Parar, o resultado vai aparecer aqui.</p>
+          </div>
+        </div>
+        <div class="card display">
+          <div class="speed-reader">
+            <div class="speed-text" id="speed-display">Cole um texto, clique em Iniciar e leia normalmente. Quando terminar, clique em Parar.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">Projeto estatico, simples de editar e pronto para publicar como pagina web.</p>
+  </main>
+
+  <script>
+    const defaultEmptyMessage = {
+      rsvp: "Cole um texto e clique em Iniciar",
+      focus: '<p class="empty-state">Cole um texto, ajuste a velocidade e clique em Iniciar para acompanhar a leitura com destaque visual.</p>',
+      chunking: "Cole um texto e clique em Iniciar",
+      speed: "Cole um texto, clique em Iniciar e leia normalmente. Quando terminar, clique em Parar."
+    };
+
+    const tabs = document.querySelectorAll(".tab-button");
+    const panels = {
+      rsvp: document.getElementById("rsvp-panel"),
+      focus: document.getElementById("focus-panel"),
+      chunking: document.getElementById("chunking-panel"),
+      speed: document.getElementById("speed-panel")
+    };
+
+    tabs.forEach((button) => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
+        tabs.forEach((item) => item.classList.toggle("active", item === button));
+        Object.entries(panels).forEach(([key, panel]) => {
+          panel.classList.toggle("active", key === tab);
+        });
+      });
+    });
+
+    function splitWords(text) {
+      return text.trim().split(/\s+/).filter(Boolean);
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+    }
+
+    function stopTimerIfExists(mode) {
+      if (mode.timer) {
+        clearInterval(mode.timer);
+        mode.timer = null;
+      }
+    }
+
+    function resetCommonMode(mode, emptyMessage) {
+      stopTimerIfExists(mode);
+      mode.words = [];
+      mode.chunks = [];
+      mode.index = 0;
+      mode.running = false;
+      mode.display.innerHTML = emptyMessage;
+      mode.indexEl.textContent = "0";
+      mode.totalEl.textContent = "0";
+      mode.statusEl.textContent = "Parado";
+    }
+
+    const rsvpMode = {
+      text: document.getElementById("rsvp-text"),
+      speed: document.getElementById("rsvp-speed"),
+      speedValue: document.getElementById("rsvp-speed-value"),
+      display: document.getElementById("rsvp-display"),
+      totalEl: document.getElementById("rsvp-total"),
+      indexEl: document.getElementById("rsvp-index"),
+      statusEl: document.getElementById("rsvp-status"),
+      startBtn: document.getElementById("rsvp-start"),
+      pauseBtn: document.getElementById("rsvp-pause"),
+      resetBtn: document.getElementById("rsvp-reset"),
+      words: [],
+      index: 0,
+      timer: null,
+      running: false
+    };
+
+    function prepareRsvp() {
+      const words = splitWords(rsvpMode.text.value);
+      if (!words.length) {
+        resetCommonMode(rsvpMode, defaultEmptyMessage.rsvp);
+        rsvpMode.display.textContent = "Digite ou cole um texto valido para comecar.";
+        return false;
+      }
+      rsvpMode.words = words;
+      rsvpMode.totalEl.textContent = String(words.length);
+      return true;
+    }
+
+    function runRsvp() {
+      if (rsvpMode.index >= rsvpMode.words.length) {
+        stopTimerIfExists(rsvpMode);
+        rsvpMode.running = false;
+        rsvpMode.statusEl.textContent = "Concluido";
+        return;
+      }
+      rsvpMode.display.textContent = rsvpMode.words[rsvpMode.index];
+      rsvpMode.index += 1;
+      rsvpMode.indexEl.textContent = String(rsvpMode.index);
+    }
+
+    function startRsvp() {
+      if (!rsvpMode.words.length && !prepareRsvp()) return;
+      stopTimerIfExists(rsvpMode);
+      rsvpMode.running = true;
+      rsvpMode.statusEl.textContent = "Lendo";
+      runRsvp();
+      const interval = Math.max(60, Math.round(60000 / Number(rsvpMode.speed.value)));
+      rsvpMode.timer = setInterval(runRsvp, interval);
+    }
+
+    rsvpMode.speed.addEventListener("input", () => {
+      rsvpMode.speedValue.textContent = rsvpMode.speed.value;
+      if (rsvpMode.running) startRsvp();
+    });
+
+    rsvpMode.startBtn.addEventListener("click", () => {
+      if (!rsvpMode.words.length || rsvpMode.index === 0 || rsvpMode.index >= rsvpMode.words.length) {
+        rsvpMode.index = 0;
+        prepareRsvp();
+      }
+      startRsvp();
+    });
+
+    rsvpMode.pauseBtn.addEventListener("click", () => {
+      stopTimerIfExists(rsvpMode);
+      rsvpMode.running = false;
+      rsvpMode.statusEl.textContent = "Pausado";
+    });
+
+    rsvpMode.resetBtn.addEventListener("click", () => {
+      rsvpMode.index = 0;
+      resetCommonMode(rsvpMode, defaultEmptyMessage.rsvp);
+    });
+
+    const focusMode = {
+      text: document.getElementById("focus-text"),
+      speed: document.getElementById("focus-speed"),
+      speedValue: document.getElementById("focus-speed-value"),
+      display: document.getElementById("focus-display"),
+      totalEl: document.getElementById("focus-total"),
+      indexEl: document.getElementById("focus-index"),
+      statusEl: document.getElementById("focus-status"),
+      startBtn: document.getElementById("focus-start"),
+      pauseBtn: document.getElementById("focus-pause"),
+      resetBtn: document.getElementById("focus-reset"),
+      words: [],
+      index: 0,
+      timer: null,
+      running: false
+    };
+
+    function renderFocus() {
+      if (!focusMode.words.length) {
+        focusMode.display.innerHTML = defaultEmptyMessage.focus;
+        return;
+      }
+      const html = focusMode.words.map((word, index) => {
+        const activeClass = index === focusMode.index ? "focus-word active" : "focus-word";
+        return '<span class="' + activeClass + '">' + word + "</span>";
+      }).join(" ");
+      focusMode.display.innerHTML = "<p>" + html + "</p>";
+    }
+
+    function prepareFocus() {
+      const words = splitWords(focusMode.text.value);
+      if (!words.length) {
+        resetCommonMode(focusMode, defaultEmptyMessage.focus);
+        return false;
+      }
+      focusMode.words = words;
+      focusMode.totalEl.textContent = String(words.length);
+      renderFocus();
+      return true;
+    }
+
+    function runFocus() {
+      if (focusMode.index >= focusMode.words.length) {
+        stopTimerIfExists(focusMode);
+        focusMode.running = false;
+        focusMode.statusEl.textContent = "Concluido";
+        focusMode.index = focusMode.words.length - 1;
+        renderFocus();
+        focusMode.indexEl.textContent = String(focusMode.words.length);
+        return;
+      }
+      renderFocus();
+      focusMode.indexEl.textContent = String(focusMode.index + 1);
+      focusMode.index += 1;
+    }
+
+    function startFocus() {
+      if (!focusMode.words.length && !prepareFocus()) return;
+      stopTimerIfExists(focusMode);
+      focusMode.running = true;
+      focusMode.statusEl.textContent = "Lendo";
+      runFocus();
+      const interval = Math.max(80, Math.round(60000 / Number(focusMode.speed.value)));
+      focusMode.timer = setInterval(runFocus, interval);
+    }
+
+    focusMode.speed.addEventListener("input", () => {
+      focusMode.speedValue.textContent = focusMode.speed.value;
+      if (focusMode.running) startFocus();
+    });
+
+    focusMode.startBtn.addEventListener("click", () => {
+      if (!focusMode.words.length || focusMode.index === 0 || focusMode.index >= focusMode.words.length) {
+        focusMode.index = 0;
+        prepareFocus();
+      }
+      startFocus();
+    });
+
+    focusMode.pauseBtn.addEventListener("click", () => {
+      stopTimerIfExists(focusMode);
+      focusMode.running = false;
+      focusMode.statusEl.textContent = "Pausado";
+    });
+
+    focusMode.resetBtn.addEventListener("click", () => {
+      focusMode.index = 0;
+      resetCommonMode(focusMode, defaultEmptyMessage.focus);
+    });
+
+    const chunkingMode = {
+      text: document.getElementById("chunking-text"),
+      size: document.getElementById("chunking-size"),
+      speed: document.getElementById("chunking-speed"),
+      speedValue: document.getElementById("chunking-speed-value"),
+      display: document.getElementById("chunking-display"),
+      totalEl: document.getElementById("chunking-total"),
+      indexEl: document.getElementById("chunking-index"),
+      statusEl: document.getElementById("chunking-status"),
+      startBtn: document.getElementById("chunking-start"),
+      pauseBtn: document.getElementById("chunking-pause"),
+      resetBtn: document.getElementById("chunking-reset"),
+      chunks: [],
+      index: 0,
+      timer: null,
+      running: false
+    };
+
+    function buildChunks(words, size) {
+      const chunks = [];
+      for (let i = 0; i < words.length; i += size) {
+        chunks.push(words.slice(i, i + size).join(" "));
+      }
+      return chunks;
+    }
+
+    function prepareChunking() {
+      const words = splitWords(chunkingMode.text.value);
+      const size = Math.max(2, Number(chunkingMode.size.value) || 3);
+      if (!words.length) {
+        resetCommonMode(chunkingMode, defaultEmptyMessage.chunking);
+        chunkingMode.display.textContent = "Digite ou cole um texto valido para comecar.";
+        return false;
+      }
+      chunkingMode.chunks = buildChunks(words, size);
+      chunkingMode.totalEl.textContent = String(chunkingMode.chunks.length);
+      return true;
+    }
+
+    function runChunking() {
+      if (chunkingMode.index >= chunkingMode.chunks.length) {
+        stopTimerIfExists(chunkingMode);
+        chunkingMode.running = false;
+        chunkingMode.statusEl.textContent = "Concluido";
+        return;
+      }
+      chunkingMode.display.textContent = chunkingMode.chunks[chunkingMode.index];
+      chunkingMode.index += 1;
+      chunkingMode.indexEl.textContent = String(chunkingMode.index);
+    }
+
+    function startChunking() {
+      if (!chunkingMode.chunks.length && !prepareChunking()) return;
+      stopTimerIfExists(chunkingMode);
+      chunkingMode.running = true;
+      chunkingMode.statusEl.textContent = "Lendo";
+      runChunking();
+      const interval = Math.max(120, Math.round(60000 / Number(chunkingMode.speed.value)));
+      chunkingMode.timer = setInterval(runChunking, interval);
+    }
+
+    chunkingMode.speed.addEventListener("input", () => {
+      chunkingMode.speedValue.textContent = chunkingMode.speed.value;
+      if (chunkingMode.running) startChunking();
+    });
+
+    chunkingMode.startBtn.addEventListener("click", () => {
+      if (!chunkingMode.chunks.length || chunkingMode.index === 0 || chunkingMode.index >= chunkingMode.chunks.length) {
+        chunkingMode.index = 0;
+        prepareChunking();
+      }
+      startChunking();
+    });
+
+    chunkingMode.pauseBtn.addEventListener("click", () => {
+      stopTimerIfExists(chunkingMode);
+      chunkingMode.running = false;
+      chunkingMode.statusEl.textContent = "Pausado";
+    });
+
+    chunkingMode.resetBtn.addEventListener("click", () => {
+      chunkingMode.index = 0;
+      resetCommonMode(chunkingMode, defaultEmptyMessage.chunking);
+    });
+
+    const speedMode = {
+      text: document.getElementById("speed-text"),
+      display: document.getElementById("speed-display"),
+      timerEl: document.getElementById("speed-timer"),
+      wordsEl: document.getElementById("speed-word-count"),
+      totalTimeEl: document.getElementById("speed-total-time"),
+      wpmEl: document.getElementById("speed-wpm"),
+      resultEl: document.getElementById("speed-result"),
+      startBtn: document.getElementById("speed-start"),
+      stopBtn: document.getElementById("speed-stop"),
+      resetBtn: document.getElementById("speed-reset"),
+      timer: null,
+      seconds: 0,
+      running: false
+    };
+
+    function renderSpeedText() {
+      const text = speedMode.text.value.trim();
+      speedMode.display.textContent = text || defaultEmptyMessage.speed;
+      speedMode.wordsEl.textContent = String(splitWords(text).length);
+    }
+
+    function updateSpeedTimer() {
+      speedMode.seconds += 1;
+      speedMode.timerEl.textContent = formatTime(speedMode.seconds);
+      speedMode.totalTimeEl.textContent = formatTime(speedMode.seconds);
+    }
+
+    function startSpeedTest() {
+      const words = splitWords(speedMode.text.value);
+      if (!words.length) {
+        renderSpeedText();
+        speedMode.resultEl.innerHTML = "<h3>Resultado</h3><p>Digite ou cole um texto valido antes de iniciar o teste.</p>";
+        return;
+      }
+      renderSpeedText();
+      if (speedMode.running) return;
+      speedMode.running = true;
+      speedMode.timer = setInterval(updateSpeedTimer, 1000);
+      speedMode.resultEl.innerHTML = "<h3>Resultado</h3><p>Leitura em andamento. Quando terminar, clique em Parar.</p>";
+    }
+
+    function stopSpeedTest() {
+      if (!speedMode.running) return;
+      clearInterval(speedMode.timer);
+      speedMode.timer = null;
+      speedMode.running = false;
+      const wordCount = splitWords(speedMode.text.value).length;
+      const minutes = speedMode.seconds / 60;
+      const wpm = minutes > 0 ? Math.round(wordCount / minutes) : 0;
+      speedMode.wordsEl.textContent = String(wordCount);
+      speedMode.totalTimeEl.textContent = formatTime(speedMode.seconds);
+      speedMode.wpmEl.textContent = String(wpm);
+      speedMode.resultEl.innerHTML =
+        "<h3>Resultado</h3><p>Voce leu <strong>" + wordCount + " palavras</strong> em <strong>" + formatTime(speedMode.seconds) +
+        "</strong>. Sua velocidade foi de <strong>" + wpm + " PPM</strong>.</p>";
+    }
+
+    function resetSpeedTest() {
+      if (speedMode.timer) clearInterval(speedMode.timer);
+      speedMode.timer = null;
+      speedMode.running = false;
+      speedMode.seconds = 0;
+      speedMode.timerEl.textContent = "00:00";
+      speedMode.totalTimeEl.textContent = "00:00";
+      speedMode.wpmEl.textContent = "0";
+      speedMode.resultEl.innerHTML = "<h3>Resultado</h3><p>Quando voce finalizar a leitura e clicar em Parar, o resultado vai aparecer aqui.</p>";
+      renderSpeedText();
+    }
+
+    speedMode.text.addEventListener("input", renderSpeedText);
+    speedMode.startBtn.addEventListener("click", startSpeedTest);
+    speedMode.stopBtn.addEventListener("click", stopSpeedTest);
+    speedMode.resetBtn.addEventListener("click", resetSpeedTest);
+
+    renderFocus();
+    renderSpeedText();
+    rsvpMode.speedValue.textContent = rsvpMode.speed.value;
+    focusMode.speedValue.textContent = focusMode.speed.value;
+    chunkingMode.speedValue.textContent = chunkingMode.speed.value;
+  </script>
+</body>
+</html>
